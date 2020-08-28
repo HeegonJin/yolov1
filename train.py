@@ -60,9 +60,6 @@ total_train_step = num_epochs * total_step
 
 for epoch in range(num_epochs):
 
-    if (epoch % 200) == 0:
-        scheduler.step()
-
     for i, (images, labels) in enumerate(train_loader):
 
         images = images.to(device)
@@ -72,12 +69,7 @@ for epoch in range(num_epochs):
         outputs = model(images)
 
         # Calc Loss
-        loss, \
-        obj_coord1_loss, \
-        obj_size1_loss, \
-        obj_class_loss, \
-        noobjness1_loss, \
-        objness1_loss = detection_loss_4_yolo(outputs, labels, device.type)
+        loss = detection_loss_4_yolo(outputs, labels, device.type)
         # objness1_loss = detection_loss_4_yolo(outputs, labels)
 
         # Backward and optimize
@@ -85,3 +77,6 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         print(loss.item())
+
+    if epoch % 200 == 0:
+        scheduler.step()
